@@ -173,17 +173,17 @@ function update()
 
     ri = reactor.getReactorInfo()
 
-    charged = ri.status == "warming_up" and ri.temperature >= 2000
-    charging = ri.status == "warming_up" and ri.temperature < 2000
-    running = ri.status == "running"
-    cold = ri.status == "cold"
-    stopping = ri.status == "stopping"
-
     -- print out all the infos from .getReactorInfo() to term
 
     if ri == nil then
       error("reactor has an invalid setup")
     end
+
+    charged = ri.status == "warming_up" and ri.temperature >= 2000
+    charging = ri.status == "warming_up" and ri.temperature < 2000
+    running = ri.status == "running"
+    cold = ri.status == "cold"
+    stopping = ri.status == "stopping"
 
     for k, v in pairs (ri) do
       print(k.. ": ".. tostring(v))
