@@ -27,6 +27,11 @@ local inputfluxgate
 
 -- reactor information
 local ri
+local charged
+local charging
+local running
+local cold
+local stopping
 
 -- last performed action
 local action = "None since reboot"
@@ -168,6 +173,12 @@ function update()
 
     ri = reactor.getReactorInfo()
 
+    charged = ri.status == "warming_up" and ri.temperature >= 2000
+    charging = ri.status == "warming_up" and ri.temperature < 2000
+    running = ri.status == "running"
+    cold = ri.status == "cold"
+    stopping = ri.status == "stopping"
+
     -- print out all the infos from .getReactorInfo() to term
 
     if ri == nil then
@@ -185,11 +196,11 @@ function update()
     local statusColor
     statusColor = colors.red
 
-    if ri.status == "running" or ri.status == "charged" then
+    if running or charged then
       statusColor = colors.green
-    elseif ri.status == "cold" then
+    elseif cold then
       statusColor = colors.gray
-    elseif ri.status == "warming_up" then
+    elseif charging then
       statusColor = colors.orange
     end
 
@@ -257,25 +268,25 @@ function update()
     end
     
     -- are we charging? open the floodgates
-    if ri.status == "charging" then
+    if charging then
       inputfluxgate.setSignalLowFlow(900000)
       emergencyCharge = false
     end
 
     -- are we stopping from a shutdown and our temp is better? activate
-    if emergencyTemp == true and ri.status == "stopping" and ri.temperature < safeTemperature then
+    if emergencyTemp == true and stopping and ri.temperature < safeTemperature then
       reactor.activateReactor()
       emergencyTemp = false
     end
 
     -- are we charged? lets activate
-    if ri.status == "charged" and activateOnCharged == 1 then
+    if charged and activateOnCharged == 1 then
       reactor.activateReactor()
     end
 
     -- are we on? regulate the input fludgate to our target field strength
     -- or set it to our saved setting since we are on manual
-    if ri.status == "running" then
+    if running then
       if autoInputGate == 1 then 
         fluxval = ri.fieldDrainRate / (1 - (targetStrength/100) )
         print("Target Gate: ".. fluxval)
@@ -295,7 +306,7 @@ function update()
     end
 
     -- field strength is too dangerous, kill and it try and charge it before it blows
-    if fieldPercent <= lowestFieldPercent and ri.status == "running" then
+    if fieldPercent <= lowestFieldPercent and running then
       action = "Field Str < " ..lowestFieldPercent.."%"
       reactor.stopReactor()
       reactor.chargeReactor()
