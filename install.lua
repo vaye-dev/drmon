@@ -1,9 +1,9 @@
 -- drmon installation script
---
+-- https://pastebin.com/84i8Suwi
 --
 
-local libURL = "https://raw.githubusercontent.com/acidjazz/drmon/master/lib/f.lua"
-local startupURL = "https://raw.githubusercontent.com/acidjazz/drmon/master/drmon.lua"
+local libURL = "https://raw.githubusercontent.com/vaye-dev/drmon/master/lib/f.lua"
+local startupURL = "https://raw.githubusercontent.com/vaye-dev/drmon/master/drmon.lua"
 local lib, startup
 local libFile, startupFile
 

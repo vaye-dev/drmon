@@ -4,11 +4,10 @@
 
 
 # drmon
-monitor and failsafe automation for your draconic reactor
+monitor and failsafe automation for your draconic reactor (updated to 1.16.5 by vaye)
 
 ### what is this
 this is a computercraft LUA script that monitors everything about a draconic reactor, with a couple features to help keep it from exploding
-NB: This is for Minecraft 1.7.10. You will need to edit references within the code for any version higher to reflect any changes made to Draconic Evolution past its 1.7.10 release.
 
 
 ### tutorial
@@ -47,7 +46,7 @@ you can find a very well made youtube tutorial on how to set this up [here](http
 * install this code via running the install script using these commands :
 
 ```
-> pastebin get Ls1Wg3QQ install
+> pastebin get 84i8Suwi install
 > install
 ```
 * modify `startup` if you wish to configure/alter any variables mentioned in the feature list, you'll find them at the top of the file

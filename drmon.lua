@@ -34,7 +34,7 @@ local emergencyCharge = false
 local emergencyTemp = false
 
 monitor = f.periphSearch("monitor")
-inputfluxgate = f.periphSearch("flux_gate")
+inputfluxgate = f.periphSearch("flow_gate")
 fluxgate = peripheral.wrap(fluxgateSide)
 reactor = peripheral.wrap(reactorSide)
 
@@ -175,7 +175,7 @@ function update()
     end
 
     for k, v in pairs (ri) do
-      print(k.. ": ".. v)
+      print(k.. ": ".. tostring(v))
     end
     print("Output Gate: ", fluxgate.getSignalLowFlow())
     print("Input Gate: ", inputfluxgate.getSignalLowFlow())
@@ -185,11 +185,11 @@ function update()
     local statusColor
     statusColor = colors.red
 
-    if ri.status == "online" or ri.status == "charged" then
+    if ri.status == "running" or ri.status == "charged" then
       statusColor = colors.green
-    elseif ri.status == "offline" then
+    elseif ri.status == "cold" then
       statusColor = colors.gray
-    elseif ri.status == "charging" then
+    elseif ri.status == "warming_up" then
       statusColor = colors.orange
     end
 
@@ -275,7 +275,7 @@ function update()
 
     -- are we on? regulate the input fludgate to our target field strength
     -- or set it to our saved setting since we are on manual
-    if ri.status == "online" then
+    if ri.status == "running" then
       if autoInputGate == 1 then 
         fluxval = ri.fieldDrainRate / (1 - (targetStrength/100) )
         print("Target Gate: ".. fluxval)
@@ -295,7 +295,7 @@ function update()
     end
 
     -- field strength is too dangerous, kill and it try and charge it before it blows
-    if fieldPercent <= lowestFieldPercent and ri.status == "online" then
+    if fieldPercent <= lowestFieldPercent and ri.status == "running" then
       action = "Field Str < " ..lowestFieldPercent.."%"
       reactor.stopReactor()
       reactor.chargeReactor()
